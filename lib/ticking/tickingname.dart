@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ticktockname/ticking/arc_corner.dart';
 import 'package:ticktockname/ticking/size_config.dart';
 
 class TickingNameWidget extends StatefulWidget {
@@ -35,6 +36,13 @@ class _TickingNameWidgetState extends State<TickingNameWidget>
       clipBehavior: Clip.none,
       child: Stack(
         children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            child: ArcCorner(
+                controllerValue: _controller!.value,
+                moveRectSize: widget.moveRectSize),
+          ),
           Positioned(
             left: _controller!.value *
                 (SizeConfig.screenWidth! - widget.moveRectSize.width),
