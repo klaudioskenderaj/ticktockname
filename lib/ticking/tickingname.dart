@@ -5,12 +5,20 @@ import 'package:ticktockname/ticking/size_config.dart';
 class TickingNameWidget extends StatefulWidget {
   final List<String> nameList;
   final Duration moveDuration;
+  final double moveWidth;
   final Size moveRectSize;
+  final Color boxColor;
+  final Color textColor;
+  final double textSize;
   const TickingNameWidget({
     Key? key,
     required this.nameList,
     required this.moveDuration,
     required this.moveRectSize,
+    required this.boxColor,
+    required this.textColor,
+    required this.textSize,
+    required this.moveWidth,
   }) : super(key: key);
 
   @override
@@ -32,7 +40,7 @@ class _TickingNameWidgetState extends State<TickingNameWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: SizeConfig.screenWidth,
+      width: widget.moveWidth,
       clipBehavior: Clip.none,
       child: Stack(
         children: [
@@ -40,27 +48,36 @@ class _TickingNameWidgetState extends State<TickingNameWidget>
             left: 0,
             top: 0,
             child: ArcCorner(
-                controllerValue: _controller!.value,
-                moveRectSize: widget.moveRectSize),
+              controllerValue: _controller!.value,
+              moveRectSize: widget.moveRectSize,
+              moveWidth: widget.moveWidth,
+              cornerColor: widget.boxColor,
+              boxHeight: SizeConfig.screenHeight! / 2,
+            ),
           ),
           Positioned(
             left: _controller!.value *
-                (SizeConfig.screenWidth! - widget.moveRectSize.width),
+                (widget.moveWidth - widget.moveRectSize.width),
             top: SizeConfig.screenHeight! / 2 - widget.moveRectSize.height / 2,
             child: Container(
               width: widget.moveRectSize.width,
               height: widget.moveRectSize.height,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: Colors.orange),
+                  color: widget.boxColor),
             ),
           ),
           ClipPath(
-            clipper: ClipNameRect(_controller!.value, widget.moveRectSize),
+            clipper: ClipNameRect(
+                controllerValue: _controller!.value,
+                moveRectSize: widget.moveRectSize,
+                moveWidth: widget.moveWidth,
+                boxHeight: SizeConfig.screenHeight! / 2),
             child: Center(
               child: Text(
                 widget.nameList[_curIndex],
-                style: TextStyle(fontSize: 20, color: Colors.blueAccent),
+                style: TextStyle(
+                    fontSize: widget.textSize, color: widget.textColor),
               ),
             ),
           ),
@@ -91,14 +108,20 @@ class _TickingNameWidgetState extends State<TickingNameWidget>
 class ClipNameRect extends CustomClipper<Path> {
   final double? controllerValue;
   final Size? moveRectSize;
+  final double? moveWidth;
+  final double? boxHeight;
 
-  ClipNameRect(this.controllerValue, this.moveRectSize);
+  ClipNameRect({
+    required this.controllerValue,
+    required this.moveRectSize,
+    required this.moveWidth,
+    required this.boxHeight,
+  });
 
   @override
   Path getClip(Size size) {
-    double left =
-        (SizeConfig.screenWidth! - moveRectSize!.width) * controllerValue!;
-    double top = SizeConfig.screenHeight! / 2 - moveRectSize!.height / 2;
+    double left = (moveWidth! - moveRectSize!.width) * controllerValue!;
+    double top = boxHeight! - moveRectSize!.height / 2;
 
     var path = new Path();
     path.lineTo(left, top);

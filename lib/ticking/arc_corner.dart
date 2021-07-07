@@ -1,12 +1,20 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:ticktockname/ticking/size_config.dart';
 
 class ArcCorner extends StatefulWidget {
   final double? controllerValue;
   final Size? moveRectSize;
-  const ArcCorner({Key? key, this.controllerValue, this.moveRectSize})
+  final double? moveWidth;
+  final double? boxHeight;
+  final Color? cornerColor;
+  const ArcCorner(
+      {Key? key,
+      required this.controllerValue,
+      required this.moveRectSize,
+      required this.moveWidth,
+      required this.boxHeight,
+      required this.cornerColor})
       : super(key: key);
 
   @override
@@ -17,7 +25,8 @@ class _ArcCornerState extends State<ArcCorner> {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: OpenPainter(widget.controllerValue, widget.moveRectSize),
+      painter: OpenPainter(widget.controllerValue, widget.moveRectSize,
+          widget.moveWidth, widget.boxHeight, widget.cornerColor),
     );
   }
 }
@@ -25,17 +34,20 @@ class _ArcCornerState extends State<ArcCorner> {
 class OpenPainter extends CustomPainter {
   final double? controllerValue;
   final Size? moveRectSize;
+  final double? moveWidth;
+  final double? boxHeight;
+  final Color? cornerColor;
 
-  OpenPainter(this.controllerValue, this.moveRectSize);
+  OpenPainter(this.controllerValue, this.moveRectSize, this.moveWidth,
+      this.boxHeight, this.cornerColor);
 
   @override
   void paint(Canvas canvas, Size size) {
     double rtSize = 24;
     double rtOffset = 6;
 
-    double left =
-        (SizeConfig.screenWidth! - moveRectSize!.width) * controllerValue!;
-    double top = SizeConfig.screenHeight! / 2 - moveRectSize!.height / 2;
+    double left = (moveWidth! - moveRectSize!.width) * controllerValue!;
+    double top = boxHeight! - moveRectSize!.height / 2;
 
     List<Rect> cornerRects = [
       Rect.fromPoints(Offset(left - rtOffset, top - rtOffset),
@@ -55,9 +67,9 @@ class OpenPainter extends CustomPainter {
     List<double> radians = [pi, 1.5 * pi, pi / 2, 0];
 
     var paint1 = Paint()
-      ..color = Colors.orange
+      ..color = cornerColor!
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+      ..strokeWidth = 2;
     //draw arc
     for (int i = 0; i < 4; i++) {
       canvas.drawArc(

@@ -58,9 +58,14 @@ class _MyAppState extends State<MyApp> {
               if (snapshot.hasData) {
                 SizeConfig().init(context);
                 return TickingNameWidget(
-                  nameList: nameList,
-                  moveRectSize: Size(120, 50),
-                  moveDuration: Duration(seconds: 2),
+                  nameList: nameList, // name list
+                  moveRectSize: Size(120, 50), // moving rect size
+                  moveDuration: Duration(
+                      seconds: 2), // moving duration(left->right or reverse)
+                  textColor: Colors.red, // text color
+                  boxColor: Colors.lightBlueAccent, // moving box color
+                  textSize: 20, // font size
+                  moveWidth: SizeConfig.screenWidth!, // box moving distance
                 );
               } else {
                 return Container();
